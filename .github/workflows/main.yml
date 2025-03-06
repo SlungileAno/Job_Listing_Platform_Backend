@@ -1,0 +1,44 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Project
+        run: mvn clean package
+
+      - name: Run Tests
+        run: mvn test
+
+  deploy:
+    name: Deploy Application
+    needs: test  # Deploy only if tests pass
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Server
+        run: |
+          echo "Deploying application..."
+          # Here you can add commands to deploy to AWS, Docker, Kubernetes, etc.
